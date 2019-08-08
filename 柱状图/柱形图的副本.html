@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        var data = [
+            {
+                name: '小小',
+                value: 40,
+
+            },
+            {
+                name: '大大',
+                value: 50,
+
+            },
+            {
+                name: '中中',
+                value: 86,
+
+            },
+            {
+                name: '老老',
+                value: 78,
+
+            },
+
+        ]
+        var strdate = JSON.parse(JSON.stringify(data));
+        console.log(strdate);
+
+
+        var max = strdate.sort(function (a, b) {
+            return b.value - a.value;
+        })[0].value;
+        console.log(max);
+
+        var colorarr = data.map(function () {
+            return color();
+        })
+
+        var canvas = document.createElement('canvas');
+        canvas.width = 500;
+        canvas.height = 500;
+        canvas.style.border = '1px solid #ccc';
+
+        document.body.appendChild(canvas);
+        // 获取上下文本
+        var ctx = canvas.getContext('2d');
+        //用translate改变开始点的位置
+        ctx.translate(50, 450);
+        //开启新的路径
+        function move(e) {
+            ctx.beginPath();
+            // 下笔的点竖着的线
+            ctx.moveTo(0, 0);
+            // 移动的点
+            ctx.lineTo(0, -400);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(400, 0);
+            ctx.stroke();
+
+            ctx.textAlign = 'end';
+            for (var i = 50; i <= 400; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(-10, -i);
+                ctx.lineTo(400, -i);
+                ctx.stroke();
+                ctx.fillText((i / 400) * 100, -3, -i);
+            }
+            ctx.restore();
+
+            // 间距
+            ctx.save();
+            ctx.textAlign = 'center'
+
+
+            var maring = 400 / (data.length + 1);
+            for (var i = 0; i < data.length; i++) {
+                ctx.beginPath();
+                ctx.fillText(data[i].name, (maring * (i + 1)), 10);
+                // ctx.stroke();
+                ctx.fillStyle = colorarr[i];
+                ctx.rect((maring * (i + 1)), 0, 15, (-data[i].value / 100 * 400));
+                // ctx.textAlign = 'end'
+
+                if (e && ctx.isPointInPath(e.offsetX, e.offsetY)) {
+                    ctx.fillStyle = 'red';
+                    // ctx.data[i].value
+                    // ctx.fillText(data[i].value
+                    ctx.fillText(data[i].value, e.offsetX, (400-e.offsetY));
+                    // ctx.stroke();
+                    // ctx.closePath();
+                }
+                ctx.fill();
+
+                ctx.closePath();
+            }
+           
+        }
+        move()
+        canvas.addEventListener('mousemove', function (e) {
+            // console.log(1)
+            ctx.clearRect(0, 0, 500, 500);
+            move(e)
+
+        });
+        canvas.addEventListener('mouseover', function (e) {
+            // console.log(1)
+            // ctx.clearRect(0, 0, 500, 500);
+        });
+
+        function color() {
+            return `rgba(${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)},1)`
+        }
+        console.log(color());
+
+
+    </script>
+</body>
+
+</html>
